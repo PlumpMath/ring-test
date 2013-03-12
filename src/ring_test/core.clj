@@ -3,9 +3,8 @@
   (:use ring.util.response))
 
 (defn handler [request]
-  {:status 200
-   :headers {}
-   :body "Hello World!"})
+  (-> (response "Hello World")
+      (content-type "text/plain")))
 
 (defn wrap-content-type [handler content-type]
   (fn [request]
