@@ -1,10 +1,12 @@
 (ns ring-test.core
   (:use ring.adapter.jetty)
   (:use ring.util.response)
-  (:use ring.middleware.resource))
+  (:use ring.middleware.resource)
+  (:use ring.middleware.params)
+  (:use ring.middleware.file-info))
 
 (defn handler [request]
-  (-> (response "Hello World")
+  (-> (response "Hello World!")
       (content-type "text/plain")))
 
 (defn wrap-content-type [handler content-type]
@@ -14,8 +16,9 @@
 
 (def app
   (-> handler
-      (wrap-content-type "text/plain")
-      (wrap-resource "public")))
+      (wrap-params)
+      (wrap-resource "public")
+      (wrap-file-info)));needs to wrap around wrap-resource or wrap-file
 
 (defonce server (run-jetty #'app {:port 3000 :join? false}))
 
