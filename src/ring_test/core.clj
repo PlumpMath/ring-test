@@ -1,6 +1,7 @@
 (ns ring-test.core
   (:use ring.adapter.jetty)
-  (:use ring.util.response))
+  (:use ring.util.response)
+  (:use ring.middleware.resource))
 
 (defn handler [request]
   (-> (response "Hello World")
@@ -13,7 +14,8 @@
 
 (def app
   (-> handler
-      (wrap-content-type "text/plain")))
+      (wrap-content-type "text/plain")
+      (wrap-resource "public")))
 
 (defonce server (run-jetty #'app {:port 3000 :join? false}))
 
@@ -23,3 +25,4 @@
 ;(use 'ring-test.core)
 ;(.start server)
 ;(.stop server)
+;http://mmcgrana.github.com/ring/ring.util.response.html
