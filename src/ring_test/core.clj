@@ -17,3 +17,10 @@
       (wrap-content-type "text/plain")))
 
 (defonce server (run-jetty #'app {:port 3000 :join? false}))
+
+;http://stackoverflow.com/questions/2706044/how-do-i-stop-jetty-server-in-clojure
+;REPL usage
+;(use 'ring.adapter.jetty)
+;(use 'ring-test.core)
+;(.start server)
+;(.stop server)
