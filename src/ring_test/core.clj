@@ -4,12 +4,13 @@
   (:use ring.middleware.resource)
   (:use ring.middleware.params)
   (:use ring.middleware.file-info)
-  (:use clojure.pprint)
-  (:use ring.middleware.stacktrace))
+  (:use ring.middleware.cookies)
+  (:use clojure.pprint))
 
 (defn handler [request]
-  (-> (response "Hello World! :)")
-      (content-type "text/plain")))
+  (-> (response (str "Hello World! :)" request))
+      (content-type "text/plain")
+      (assoc-in response :cookies {"secret" {:value "foo" :secure true :max-age 3600}})))
 
 (defn wrap-content-type [handler content-type]
   (fn [request]
@@ -30,9 +31,9 @@
 (def app
   (-> #'handler
       (wrap-params)
+      (wrap-cookies)
       (wrap-resource "public")
       (wrap-file-info)
-      (wrap-stacktrace)
       (wrap-spy)));needs to wrap around wrap-resource or wrap-file
 
 (defonce server (run-jetty #'app {:port 3000 :join? false}))
